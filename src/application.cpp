@@ -29,16 +29,29 @@ int main(void) {
 
   std::cout << "Using " << glGetString(GL_VERSION) << std::endl;
 
+  float position_data[] = {
+    -0.5f, -0.5f,
+    0.0f, 0.5f,
+    0.5f, -0.5f,
+  };
+
+  /**
+   * Documentation: https://docs.gl/
+   */
+
+  /* Define buffer */
+  unsigned int buffer;      //  Buffer ID
+  glGenBuffers(1, &buffer); //  Create buffer
+  glBindBuffer(GL_ARRAY_BUFFER, buffer);  //  Select the buffer
+  glBufferData(GL_ARRAY_BUFFER, sizeof(position_data), position_data, GL_STATIC_DRAW);
+
+
   /* Loop until the user closes the window */
   while (!glfwWindowShouldClose(window)) {
     /* Render here */
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glBegin(GL_TRIANGLES);
-    glVertex2f(-0.5f, -0.5f);
-    glVertex2f(0.0f, 0.5f);
-    glVertex2f(0.5f, -0.5f);
-    glEnd();
+    glDrawArrays(GL_TRIANGLES, 0, 3); //  The drawn buffer will be the last bonded (glBindBuffer)
 
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
