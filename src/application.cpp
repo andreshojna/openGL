@@ -2,6 +2,15 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+#include <fstream>
+#include <sstream>
+
+static const std::string SHADERS_PATH = {"src/res/shaders/Basic.shader"};
+
+struct ShaderSourceCode {
+  std::string VertexSource;
+  std::string FragmentSource;
+};
 
 static unsigned int CompileShader(unsigned int type, const std::string& source) {
   unsigned int id = glCreateShader(type);
@@ -44,6 +53,34 @@ static unsigned int CreateShader(const std::string& vertexShader, const std::str
   glDeleteShader(fs);
 
   return program;
+}
+
+static ShaderSourceCode ParseShader(const std::string& pathFile) {
+  enum class ShaderType {
+    NONE = -1,
+    VERTEX = 0,
+    FRAGMENT = 1,
+  };
+  
+  std::ifstream stream(pathFile);
+  ShaderType type = ShaderType::NONE;
+  std::string line;
+  std::stringstream ss[2];
+
+  while (getline(stream, line)) {
+    if (line.find("#shader") != std::string::npos) {
+      if (line.find("vertex") != std::string::npos) {
+        type = ShaderType::VERTEX;
+
+      } else if (line.find("fragment") != std::string::npos) {
+        type = ShaderType::FRAGMENT;
+      }
+    } else {
+      if (line[0] == '/') continue;
+      ss[(int)type] << line << '\n';
+    }
+  }
+  return { ss[0].str(), ss[1].str() };
 }
 
 int main(void) {
@@ -105,28 +142,10 @@ int main(void) {
 
   glEnableVertexAttribArray(0);  // index to the attribute in the vertex
 
-  std::string vertexShader = 
-      // "#version 330 core \n"                   // not supported in HP Probook 4530s
-      "#version 130\n"                            // use this instead
-      "\n"
-      // "layout(location = 0) in vec4 position;" // not supported in version 1.30
-      "attribute vec4 position;\n"                // use this instead
-      "\n"
-      "void main() {\n"
-        "gl_Position = position;\n"
-      "}\n";
-  
-  std::string fragmentShader = 
-      // "#version 330 core \n"                   // not supported in HP Probook 4530s
-      "#version 130\n"                            // use this instead
-      // "layout(location = 0) out vec4 color;\n"
-      "\n"
-      "void main() {\n"
-        // "color = vec4(1.0, 0.0, 0.0, 1.0);\n"      // not supported in version 1.30
-        "gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n"  // use this instead
-      "}\n";
+  // ShaderSourceCode source = ParseShader("src/res/shaders/Basic.shader");
+  ShaderSourceCode source = ParseShader(SHADERS_PATH);
 
-  unsigned int shader = CreateShader(vertexShader, fragmentShader);
+  unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
   glUseProgram(shader);
 
   /** Pipeline
