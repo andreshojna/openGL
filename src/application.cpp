@@ -110,10 +110,39 @@ int main(void) {
   std::cout << "Using " << glGetString(GL_VERSION) << std::endl;
 
   /* Each line is a vertex. In OpenGL, a vertex is the basic unit of geometry. It's a point in space that defines shapes like triangles, lines, and points. */
-  float position[] = {
-    -0.5f, -0.5f, // Each vertex is a vertice
-    0.0f, 0.5f,
-    0.5f, -0.5f,
+
+  /* Geometry of square: it is formed by 2 triangles. All plane figures for openGL are triangles
+   *   0.5    _____
+   *          |   /|
+   *          |  / |
+   *          | /  |
+   *  -0.5    |/___|
+   *       -0.5   0.5
+   */
+
+  /* Wasteful way to draw a square: repeted vertices */
+  // float position_data[] = {
+  //   -0.5f, -0.5f, // Each vertex is a vertice
+  //   0.5f, -0.5f,
+  //   0.5f, 0.5f,
+
+  //   0.5f, 0.5f,
+  //   -0.5f, 0.5f,
+  //   -0.5f, -0.5f,
+  // };
+
+  /* Square using index buffer */
+  float position_data[] = {
+    // Each vertex is a vertice
+    -0.5f, -0.5f, // idx 0
+    0.5f, -0.5f,  // idx 1
+    0.5f, 0.5f,   // idx 2
+    -0.5f, 0.5f,  // idx 3
+  };
+
+  unsigned int indices[] = {
+    0, 1, 2,
+    2, 3 ,0,
   };
 
   /**
@@ -126,9 +155,18 @@ int main(void) {
   glBindBuffer(GL_ARRAY_BUFFER, buffer);  //  Select the buffer
 
   glBufferData(GL_ARRAY_BUFFER,
-              sizeof(position),  // size in bytes
-              position,          // data address
+              sizeof(position_data),  // size in bytes
+              position_data,          // data address
               GL_STATIC_DRAW);        // hint
+
+  /* Define index buffer */
+  unsigned int ibo;      //  Index buffer object id
+  glGenBuffers(1, &ibo); //  Create index buffer object
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);  //  Select the buffer
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+              sizeof(indices),  // size of indices in bytes
+              indices,          // indices array
+              GL_STATIC_DRAW);  // hint
 
   /* Set the vertex atributes: that is, explain the layout. Possition, color, normal, texture, all are attributes */
   // stride: amount of bytes between vertex: the size of each vertex depends on the defined attributes
@@ -139,10 +177,9 @@ int main(void) {
                         GL_FALSE, // normalize
                         sizeof(float) * 2, // stride: two floats per vertex = 8bytes
                         0);  // pointer: we only have one attribute per vertex
-
   glEnableVertexAttribArray(0);  // index to the attribute in the vertex
 
-  // ShaderSourceCode source = ParseShader("src/res/shaders/Basic.shader");
+  /* Generate shaders */
   ShaderSourceCode source = ParseShader(SHADERS_PATH);
 
   unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
@@ -161,7 +198,11 @@ int main(void) {
     /* Render here */
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glDrawArrays(GL_TRIANGLES, 0, 3); //  The drawn buffer will be the last bonded (glBindBuffer)
+    //  The drawn buffer will be the last bonded (glBindBuffer)
+    glDrawElements(GL_TRIANGLES,  // Kind of primitive to render
+                  6,              // Number of indices drawn
+                  GL_UNSIGNED_INT,// Indices type
+                  nullptr);       // Offset of the first index in the array in the data store of the buffer currently bound to the GL_ELEMENT_ARRAY_BUFFER target. 
 
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
