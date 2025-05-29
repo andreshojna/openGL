@@ -115,6 +115,11 @@ int main(void) {
     return -1;
   }
 
+  /* Use OpenGL 3.3 CORE profile to create VertexArray manually; in compat mode is created by defualt */
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
   /* Create a windowed mode window and its OpenGL context */
   window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
   if (!window) {
@@ -175,6 +180,11 @@ int main(void) {
    * Documentation: https://docs.gl/
    */
 
+  /* Create Vertex Array Buffer */
+  unsigned int vao;
+  GLCall(glGenVertexArrays(1, &vao));
+  GLCall(glBindVertexArray(vao));
+
   /* Define buffer */
   unsigned int buffer;      //  Buffer ID
   glGenBuffers(1, &buffer); //  Create buffer
@@ -194,9 +204,11 @@ int main(void) {
               indices,          // indices array
               GL_STATIC_DRAW);  // hint
 
-  /* Set the vertex atributes: that is, explain the layout. Possition, color, normal, texture, all are attributes */
-  // stride: amount of bytes between vertex: the size of each vertex depends on the defined attributes
-  // pointer: index in bytes inside the vertex, its like the offset where the attribute is inside the vertex
+  /* Set the vertex atributes: that is, explain the layout. Possition, color, normal, texture, all are attributes 
+   * This line links the vertex buffer with the array buffer.
+   * stride: amount of bytes between vertex: the size of each vertex depends on the defined attributes
+   * pointer: index in bytes inside the vertex, its like the offset where the attribute is inside the vertex
+   */
   glVertexAttribPointer(0,    // Index:
                         2,    // size: number of components per generic vertex attribute. (1 to 4)
                         GL_FLOAT, // type
@@ -216,6 +228,12 @@ int main(void) {
   ASSERT(location != -1);
   glUniform4f(location, 0.2f, 0.3f, 1.0f, 1.0f);
 
+  /* Unbind all */
+  GLCall(glBindVertexArray(0));
+  GLCall(glUseProgram(0));
+  GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+  GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+
   /** Pipeline
    * ---------
    * Draw call
@@ -234,7 +252,10 @@ int main(void) {
 
     GLClearError();
 
+    GLCall(glUseProgram(shader));
     GLCall(glUniform4f(location, r, 0.3f, 1.0f, 1.0f));
+
+    GLCall(glBindVertexArray(vao));
     //  The drawn buffer will be the last bonded (glBindBuffer)
     GLCall(glDrawElements(GL_TRIANGLES,  // Kind of primitive to render
                   6,              // Number of indices drawn
