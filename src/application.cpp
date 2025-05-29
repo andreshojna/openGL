@@ -5,12 +5,38 @@
 #include <fstream>
 #include <sstream>
 
+#define ASSERT(x) if (!(x)) __builtin_trap()
+#define GLCall(x) do {\
+  GLClearError();     \
+  x;                  \
+  ASSERT(GLLogcall(#x, __FILE__, __LINE__)); \
+} while (0);
+
 static const std::string SHADERS_PATH = {"src/res/shaders/Basic.shader"};
 
 struct ShaderSourceCode {
   std::string VertexSource;
   std::string FragmentSource;
 };
+
+static void GLClearError() {
+  while (glGetError() != GL_NO_ERROR);
+}
+
+static void GLCheckError() {
+  while (GLenum error = glGetError()) {
+    std::cout << "[OpenGL error]: 0x" << std::hex << error << std::endl;
+  }
+}
+
+static bool GLLogcall(const char* func, const char* file, int line) {
+  while (GLenum error = glGetError()) {
+    std::cout << "[OpenGL error]: 0x" << std::hex << error << std::dec << std::endl;
+    std::cout << file <<", " << func << ", " << line << std::endl;
+    return false;
+  }
+  return true;
+}
 
 static unsigned int CompileShader(unsigned int type, const std::string& source) {
   unsigned int id = glCreateShader(type);
@@ -198,11 +224,18 @@ int main(void) {
     /* Render here */
     glClear(GL_COLOR_BUFFER_BIT);
 
+    GLClearError();
+
     //  The drawn buffer will be the last bonded (glBindBuffer)
-    glDrawElements(GL_TRIANGLES,  // Kind of primitive to render
-                  6,              // Number of indices drawn
-                  GL_UNSIGNED_INT,// Indices type
-                  nullptr);       // Offset of the first index in the array in the data store of the buffer currently bound to the GL_ELEMENT_ARRAY_BUFFER target. 
+    // glDrawElements(GL_TRIANGLES,  // Kind of primitive to render
+    //               6,              // Number of indices drawn
+    //               GL_UNSIGNED_INT,// Indices type
+    //               nullptr);       // Offset of the first index in the array in the data store of the buffer currently bound to the GL_ELEMENT_ARRAY_BUFFER target. 
+
+    GLCall(glDrawElements(GL_TRIANGLES,   // Kind of primitive to render
+                  6,                      // Number of indices drawn
+                  GL_INT,                 // Indices type
+                  nullptr));              // Offset of the first index in the array in the data store of the buffer currently bound to the GL_ELEMENT_ARRAY_BUFFER target. 
 
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
