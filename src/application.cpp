@@ -6,11 +6,9 @@
 #include <sstream>
 
 #define ASSERT(x) if (!(x)) __builtin_trap()
-#define GLCall(x) do {\
-  GLClearError();     \
-  x;                  \
-  ASSERT(GLLogcall(#x, __FILE__, __LINE__)); \
-} while (0);
+#define GLCall(x) GLClearError();     \
+    x;                                \
+    ASSERT(GLLogcall(#x, __FILE__, __LINE__));
 
 static const std::string SHADERS_PATH = {"src/res/shaders/Basic.shader"};
 
@@ -127,6 +125,8 @@ int main(void) {
   /* Make the window's context current */
   glfwMakeContextCurrent(window);
 
+  glfwSwapInterval(1);
+
   /* Make context before call Init */
   if (glewInit() != GLEW_OK) {
     std::cout << "GLEW doesn't init properly" << std::endl;
@@ -211,6 +211,11 @@ int main(void) {
   unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
   glUseProgram(shader);
 
+  /* Setting up uniform color */
+  GLCall(int location = glGetUniformLocation(shader, "u_Color")) // use the same name declared in shader
+  ASSERT(location != -1);
+  glUniform4f(location, 0.2f, 0.3f, 1.0f, 1.0f);
+
   /** Pipeline
    * ---------
    * Draw call
@@ -219,6 +224,9 @@ int main(void) {
    * Visualisation
    */
 
+  float r = 0.0f;
+  float inc = 0.05f;
+
   /* Loop until the user closes the window */
   while (!glfwWindowShouldClose(window)) {
     /* Render here */
@@ -226,16 +234,13 @@ int main(void) {
 
     GLClearError();
 
+    GLCall(glUniform4f(location, r, 0.3f, 1.0f, 1.0f));
     //  The drawn buffer will be the last bonded (glBindBuffer)
-    // glDrawElements(GL_TRIANGLES,  // Kind of primitive to render
-    //               6,              // Number of indices drawn
-    //               GL_UNSIGNED_INT,// Indices type
-    //               nullptr);       // Offset of the first index in the array in the data store of the buffer currently bound to the GL_ELEMENT_ARRAY_BUFFER target. 
-
-    GLCall(glDrawElements(GL_TRIANGLES,   // Kind of primitive to render
-                  6,                      // Number of indices drawn
-                  GL_INT,                 // Indices type
-                  nullptr));              // Offset of the first index in the array in the data store of the buffer currently bound to the GL_ELEMENT_ARRAY_BUFFER target. 
+    GLCall(glDrawElements(GL_TRIANGLES,  // Kind of primitive to render
+                  6,              // Number of indices drawn
+                  GL_UNSIGNED_INT,// Indices type
+                  nullptr));       // Offset of the first index in the array in the data store of the buffer currently bound to the GL_ELEMENT_ARRAY_BUFFER target.
+    r = (r > 1.0f) ? 0.0f : r + inc;
 
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
