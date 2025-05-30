@@ -5,10 +5,9 @@
 #include <fstream>
 #include <sstream>
 
-#define ASSERT(x) if (!(x)) __builtin_trap()
-#define GLCall(x) GLClearError();     \
-    x;                                \
-    ASSERT(GLLogcall(#x, __FILE__, __LINE__));
+#include "Renderer.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
 
 static const std::string SHADERS_PATH = {"src/res/shaders/Basic.shader"};
 
@@ -16,25 +15,6 @@ struct ShaderSourceCode {
   std::string VertexSource;
   std::string FragmentSource;
 };
-
-static void GLClearError() {
-  while (glGetError() != GL_NO_ERROR);
-}
-
-static void GLCheckError() {
-  while (GLenum error = glGetError()) {
-    std::cout << "[OpenGL error]: 0x" << std::hex << error << std::endl;
-  }
-}
-
-static bool GLLogcall(const char* func, const char* file, int line) {
-  while (GLenum error = glGetError()) {
-    std::cout << "[OpenGL error]: 0x" << std::hex << error << std::dec << std::endl;
-    std::cout << file <<", " << func << ", " << line << std::endl;
-    return false;
-  }
-  return true;
-}
 
 static unsigned int CompileShader(unsigned int type, const std::string& source) {
   unsigned int id = glCreateShader(type);
@@ -185,24 +165,9 @@ int main(void) {
   GLCall(glGenVertexArrays(1, &vao));
   GLCall(glBindVertexArray(vao));
 
-  /* Define buffer */
-  unsigned int buffer;      //  Buffer ID
-  glGenBuffers(1, &buffer); //  Create buffer
-  glBindBuffer(GL_ARRAY_BUFFER, buffer);  //  Select the buffer
+  VertexBuffer vb{position_data, sizeof(position_data)};
 
-  glBufferData(GL_ARRAY_BUFFER,
-              sizeof(position_data),  // size in bytes
-              position_data,          // data address
-              GL_STATIC_DRAW);        // hint
-
-  /* Define index buffer */
-  unsigned int ibo;      //  Index buffer object id
-  glGenBuffers(1, &ibo); //  Create index buffer object
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);  //  Select the buffer
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-              sizeof(indices),  // size of indices in bytes
-              indices,          // indices array
-              GL_STATIC_DRAW);  // hint
+  IndexBuffer ib{indices, sizeof(indices)/sizeof(indices[0])};
 
   /* Set the vertex atributes: that is, explain the layout. Possition, color, normal, texture, all are attributes 
    * This line links the vertex buffer with the array buffer.
@@ -243,7 +208,7 @@ int main(void) {
    */
 
   float r = 0.0f;
-  float inc = 0.05f;
+  float inc = 0.025f;
 
   /* Loop until the user closes the window */
   while (!glfwWindowShouldClose(window)) {
@@ -256,12 +221,17 @@ int main(void) {
     GLCall(glUniform4f(location, r, 0.3f, 1.0f, 1.0f));
 
     GLCall(glBindVertexArray(vao));
+    ib.Bind();
+
     //  The drawn buffer will be the last bonded (glBindBuffer)
-    GLCall(glDrawElements(GL_TRIANGLES,  // Kind of primitive to render
-                  6,              // Number of indices drawn
-                  GL_UNSIGNED_INT,// Indices type
-                  nullptr));       // Offset of the first index in the array in the data store of the buffer currently bound to the GL_ELEMENT_ARRAY_BUFFER target.
-    r = (r > 1.0f) ? 0.0f : r + inc;
+    GLCall(glDrawElements(GL_TRIANGLES,     // Kind of primitive to render
+                          6,                // Number of indices drawn
+                          GL_UNSIGNED_INT,  // Indices type
+                          nullptr));        // Offset of the first index in the array in the data store of the buffer currently bound to the GL_ELEMENT_ARRAY_BUFFER target.
+    // Red color increment
+    // r = (r > 1.0f) ? 0.0f : r + inc;
+    inc = (r > 1.0f) ? -0.01f : (r < 0) ? 0.01f : inc;
+    r += inc; 
 
     /* Swap front and back buffers */
     glfwSwapBuffers(window);

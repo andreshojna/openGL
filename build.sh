@@ -7,8 +7,17 @@ GLEW_LIB_PATH="./deps/GLEW/lib/"
 GLEW_STATIC_LIB="./deps/GLEW/lib/libGLEW.a"
 
 STATIC_LIBS="$GLEW_STATIC_LIB $GLFW_STATIC_LIB"
-LIBS="-lpthread -lGL -lm -ldl -lX11 -lpthread"
+DYNAMIC_LIBS="-lpthread -lGL -lm -ldl -lX11 -lpthread"
 
 OUT_FILE="app"
 
-g++ -I$GLFW_INCLUDE_PATH -I$GLEW_INCLUDE_PATH -L$GLFW_LIB_PATH src/application.cpp $STATIC_LIBS $LIBS -o $OUT_FILE
+g++ -I$GLFW_INCLUDE_PATH\
+    -I$GLEW_INCLUDE_PATH\
+    -L$GLFW_LIB_PATH\
+    src/application.cpp\
+    src/IndexBuffer.cpp\
+    src/Renderer.cpp\
+    src/VertexBuffer.cpp\
+    $STATIC_LIBS\
+    $DYNAMIC_LIBS\
+    -o $OUT_FILE
