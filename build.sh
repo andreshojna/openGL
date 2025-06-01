@@ -17,7 +17,9 @@ g++ -I$GLFW_INCLUDE_PATH\
     src/application.cpp\
     src/IndexBuffer.cpp\
     src/Renderer.cpp\
+    src/VertexArray.cpp\
     src/VertexBuffer.cpp\
+    src/VertexBufferLayout.cpp\
     $STATIC_LIBS\
     $DYNAMIC_LIBS\
     -o $OUT_FILE

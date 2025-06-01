@@ -5,9 +5,10 @@
 #include <fstream>
 #include <sstream>
 
-#include "Renderer.h"
-#include "VertexBuffer.h"
 #include "IndexBuffer.h"
+#include "Renderer.h"
+#include "VertexArray.h"
+#include "VertexBuffer.h"
 
 static const std::string SHADERS_PATH = {"src/res/shaders/Basic.shader"};
 
@@ -160,31 +161,17 @@ int main(void) {
    * Documentation: https://docs.gl/
    */
 
-  /* Create Vertex Array Buffer */
-  unsigned int vao;
-  GLCall(glGenVertexArrays(1, &vao));
-  GLCall(glBindVertexArray(vao));
-
+  VertexArray va;
   VertexBuffer vb{position_data, sizeof(position_data)};
+  VertexBufferLayout layout;
 
-  IndexBuffer ib{indices, sizeof(indices)/sizeof(indices[0])};
+  layout.Push<float>(2);
+  va.AddBuffer(vb, layout);
 
-  /* Set the vertex atributes: that is, explain the layout. Possition, color, normal, texture, all are attributes 
-   * This line links the vertex buffer with the array buffer.
-   * stride: amount of bytes between vertex: the size of each vertex depends on the defined attributes
-   * pointer: index in bytes inside the vertex, its like the offset where the attribute is inside the vertex
-   */
-  glVertexAttribPointer(0,    // Index:
-                        2,    // size: number of components per generic vertex attribute. (1 to 4)
-                        GL_FLOAT, // type
-                        GL_FALSE, // normalize
-                        sizeof(float) * 2, // stride: two floats per vertex = 8bytes
-                        0);  // pointer: we only have one attribute per vertex
-  glEnableVertexAttribArray(0);  // index to the attribute in the vertex
+  IndexBuffer ib{indices, sizeof(indices)/sizeof(indices[0])};  // This must be called after bind the vertex array
 
   /* Generate shaders */
   ShaderSourceCode source = ParseShader(SHADERS_PATH);
-
   unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
   glUseProgram(shader);
 
@@ -220,7 +207,7 @@ int main(void) {
     GLCall(glUseProgram(shader));
     GLCall(glUniform4f(location, r, 0.3f, 1.0f, 1.0f));
 
-    GLCall(glBindVertexArray(vao));
+    va.Bind();
     ib.Bind();
 
     //  The drawn buffer will be the last bonded (glBindBuffer)
@@ -229,7 +216,6 @@ int main(void) {
                           GL_UNSIGNED_INT,  // Indices type
                           nullptr));        // Offset of the first index in the array in the data store of the buffer currently bound to the GL_ELEMENT_ARRAY_BUFFER target.
     // Red color increment
-    // r = (r > 1.0f) ? 0.0f : r + inc;
     inc = (r > 1.0f) ? -0.01f : (r < 0) ? 0.01f : inc;
     r += inc; 
 
