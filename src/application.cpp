@@ -8,6 +8,7 @@
 #include "Shader.h"
 #include "VertexArray.h"
 #include "VertexBuffer.h"
+#include "VertexBufferLayout.h"
 
 static const std::string SHADERS_PATH = {"src/res/shaders/Basic.shader"};
 
@@ -111,27 +112,20 @@ int main(void) {
    * Visualisation
    */
 
+  Renderer renderer;
   float r = 0.0f;
   float inc = 0.025f;
 
   /* Loop until the user closes the window */
   while (!glfwWindowShouldClose(window)) {
     /* Render here */
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    GLClearError();
+    renderer.Clear();
 
     shader.Bind();
-    shader.SetUniform4f("u_Color", r, 0.3f, 1.0f, 1.0f);
+    shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
 
-    va.Bind();
-    ib.Bind();
+    renderer.Draw(va, ib, shader);
 
-    //  The drawn buffer will be the last bonded (glBindBuffer)
-    GLCall(glDrawElements(GL_TRIANGLES,     // Kind of primitive to render
-                          6,                // Number of indices drawn
-                          GL_UNSIGNED_INT,  // Indices type
-                          nullptr));        // Offset of the first index in the array in the data store of the buffer currently bound to the GL_ELEMENT_ARRAY_BUFFER target.
     // Red color increment
     inc = (r > 1.0f) ? -0.01f : (r < 0) ? 0.01f : inc;
     r += inc; 

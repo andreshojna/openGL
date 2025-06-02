@@ -20,3 +20,19 @@ bool GLLogcall(const char* func, const char* file, int line) {
   }
   return true;
 }
+
+void Renderer::Clear() const {
+  GLCall(glClear(GL_COLOR_BUFFER_BIT));
+}
+
+void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const {
+  shader.Bind();
+  va.Bind();
+  ib.Bind();
+
+  //  The drawn buffer will be the last bonded (glBindBuffer)
+    GLCall(glDrawElements(GL_TRIANGLES,     // Kind of primitive to render
+                          ib.GetCount(),    // Number of indices drawn
+                          GL_UNSIGNED_INT,  // Indices type
+                          nullptr));        // Offset of the first index in the array in the data store of the buffer currently bound to the GL_ELEMENT_ARRAY_BUFFER target.
+}
