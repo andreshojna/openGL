@@ -28,7 +28,7 @@ void VertexArray::AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& la
                                 element.type,           // type
                                 element.normalized,     // normalize
                                 layout.GetStride(),     // stride: two floats per vertex = 8bytes
-                                (const void*) offset)); // pointer: we only have one attribute per vertex
+                                (const void*) (intptr_t) offset)); // pointer: we only have one attribute per vertex
     GLCall(glEnableVertexAttribArray(i));  // index to the attribute in the vertex
     offset += element.count * VertexBufferElement::GetSizeOfType(element.type);
   }
