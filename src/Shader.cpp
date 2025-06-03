@@ -80,6 +80,7 @@ ShaderSourceCode Shader::ParseShader(const std::string& filepath) {
         type = ShaderType::FRAGMENT;
       }
     } else {
+      // Skip comments
       if (line[0] == '/') continue;
       ss[(int)type] << line << '\n';
     }
@@ -93,6 +94,14 @@ void Shader::Bind() const {
 
 void Shader::Unbind() const {
   GLCall(glUseProgram(0));
+}
+
+void Shader::SetUniform1i(const std::string& name, int val) {
+  GLCall(glUniform1i(GetUniformLocation(name), val));
+}
+
+void Shader::SetUniform1f(const std::string& name, float val) {
+  GLCall(glUniform1f(GetUniformLocation(name), val));
 }
 
 void Shader::SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3) {
