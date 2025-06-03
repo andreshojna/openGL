@@ -14,10 +14,12 @@ OUT_FILE="app"
 g++ -I$GLFW_INCLUDE_PATH\
     -I$GLEW_INCLUDE_PATH\
     -L$GLFW_LIB_PATH\
+    src/vendor/stb_image/stb_image.cpp\
     src/application.cpp\
     src/IndexBuffer.cpp\
     src/Renderer.cpp\
     src/Shader.cpp\
+    src/Texture.cpp\
     src/VertexArray.cpp\
     src/VertexBuffer.cpp\
     src/VertexBufferLayout.cpp\

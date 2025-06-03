@@ -6,11 +6,13 @@
 #include "IndexBuffer.h"
 #include "Renderer.h"
 #include "Shader.h"
+#include "Texture.h"
 #include "VertexArray.h"
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
 
 static const std::string SHADERS_PATH = {"src/res/shaders/Basic.shader"};
+static const std::string SEC2_TEXTURE_PATH = {"src/res/textures/SeC2.png"};
 
 int main(void) {
   GLFWwindow* window;
@@ -56,9 +58,9 @@ int main(void) {
    *       -0.5   0.5
    */
 
-  /* Wasteful way to draw a square: repeted vertices */
+  /* Wasteful way to draw a square: repeated vertices */
   // float position_data[] = {
-  //   -0.5f, -0.5f, // Each vertex is a vertice
+  //   -0.5f, -0.5f, // Each vertex is a vertices
   //   0.5f, -0.5f,
   //   0.5f, 0.5f,
 
@@ -69,16 +71,18 @@ int main(void) {
 
   /* Square using index buffer */
   float position_data[] = {
-    // Each vertex is a vertice
-    -0.5f, -0.5f, // idx 0
-    0.5f, -0.5f,  // idx 1
-    0.5f, 0.5f,   // idx 2
-    -0.5f, 0.5f,  // idx 3
+    // Each vertex is a vertices
+    -0.5f, -0.5f, 0.0f, 0.0f, // idx 0: vertices position and texture coordinate
+    0.5f, -0.5f, 1.0f, 0.0f,  // idx 1
+    0.5f, 0.5f, 1.0f, 1.0f,   // idx 2
+    -0.5f, 0.5f, 0.0f, 1.0f,  // idx 3
+    // 0.0f, 1.0f,
   };
 
   unsigned int indices[] = {
     0, 1, 2,
     2, 3 ,0,
+    // 3, 2, 4,
   };
 
   /**
@@ -89,7 +93,8 @@ int main(void) {
   VertexBuffer vb{position_data, sizeof(position_data)};
   VertexBufferLayout layout;
 
-  layout.Push<float>(2);
+  layout.Push<float>(2);  // How many coordinates per vertex
+  layout.Push<float>(2);  // How many coordinates per vertices Texture
   va.AddBuffer(vb, layout);
 
   IndexBuffer ib{indices, sizeof(indices)/sizeof(indices[0])};  // This must be called after bind the vertex array
@@ -97,6 +102,10 @@ int main(void) {
   Shader shader(SHADERS_PATH);
   shader.Bind();
   shader.SetUniform4f("u_Color", 0.2f, 0.3f, 1.0f, 1.0f);
+
+  Texture texture(SEC2_TEXTURE_PATH);
+  texture.Bind();
+  shader.SetUniform1i("u_Texture", 0);
 
   /* Unbind all */
   va.Unbind();
