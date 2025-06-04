@@ -3,6 +3,9 @@
 
 #include <iostream>
 
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
 #include "IndexBuffer.h"
 #include "Renderer.h"
 #include "Shader.h"
@@ -105,9 +108,12 @@ int main(void) {
 
   IndexBuffer ib{indices, sizeof(indices)/sizeof(indices[0])};  // This must be called after bind the vertex array
 
+  glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f);
+
   Shader shader(SHADERS_PATH);
   shader.Bind();
   shader.SetUniform4f("u_Color", 0.2f, 0.3f, 1.0f, 1.0f);
+  shader.SetUniformMat4f("u_MVP", proj);
 
   Texture texture(CHERNO_LOGO_PATH);
   texture.Bind();

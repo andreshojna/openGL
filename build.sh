@@ -1,5 +1,6 @@
 GLFW_INCLUDE_PATH="./deps/GLFW/include/"
 GLEW_INCLUDE_PATH="./deps/GLEW/include/"
+VENDOR_INCLUDE_PATH="./src/vendor/"
 
 GLFW_LIB_PATH="./deps/GLFW/lib/"
 GLEW_LIB_PATH="./deps/GLEW/lib/"
@@ -15,6 +16,7 @@ OUT_FILE="app"
 
 g++ -I$GLFW_INCLUDE_PATH\
     -I$GLEW_INCLUDE_PATH\
+    -I$VENDOR_INCLUDE_PATH\
     -L$GLFW_LIB_PATH\
     src/application.cpp\
     src/IndexBuffer.cpp\
