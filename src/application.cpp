@@ -13,6 +13,7 @@
 
 static const std::string SHADERS_PATH = {"src/res/shaders/Basic.shader"};
 static const std::string SEC2_TEXTURE_PATH = {"src/res/textures/SeC2.png"};
+static const std::string CHERNO_LOGO_PATH = {"src/res/textures/cherno_logo.png"};
 
 int main(void) {
   GLFWwindow* window;
@@ -22,7 +23,7 @@ int main(void) {
     return -1;
   }
 
-  /* Use OpenGL 3.3 CORE profile to create VertexArray manually; in compat mode is created by defualt */
+  /* Use OpenGL 3.3 CORE profile to create VertexArray manually; in compat mode is created by default */
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -76,18 +77,20 @@ int main(void) {
     0.5f, -0.5f, 1.0f, 0.0f,  // idx 1
     0.5f, 0.5f, 1.0f, 1.0f,   // idx 2
     -0.5f, 0.5f, 0.0f, 1.0f,  // idx 3
-    // 0.0f, 1.0f,
   };
 
   unsigned int indices[] = {
     0, 1, 2,
     2, 3 ,0,
-    // 3, 2, 4,
   };
 
   /**
    * Documentation: https://docs.gl/
    */
+
+  /* Enable blending */
+  GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+  GLCall(glEnable(GL_BLEND));
 
   VertexArray va;
   VertexBuffer vb{position_data, sizeof(position_data)};
@@ -103,7 +106,7 @@ int main(void) {
   shader.Bind();
   shader.SetUniform4f("u_Color", 0.2f, 0.3f, 1.0f, 1.0f);
 
-  Texture texture(SEC2_TEXTURE_PATH);
+  Texture texture(CHERNO_LOGO_PATH);
   texture.Bind();
   shader.SetUniform1i("u_Texture", 0);
 
