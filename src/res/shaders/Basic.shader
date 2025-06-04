@@ -10,8 +10,10 @@ layout(location = 1) in vec2 texCoor; // not supported in version 1.30
 
 out vec2 v_Texcoor;
 
+uniform mat4 u_MVP; // Model view projection matrix
+
 void main() {
-  gl_Position = position;
+  gl_Position = u_MVP * position;
   v_Texcoor = texCoor;
 };
 
