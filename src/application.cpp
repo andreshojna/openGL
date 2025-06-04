@@ -88,7 +88,10 @@ int main(void) {
    * Documentation: https://docs.gl/
    */
 
-  /* Enable blending */
+  /* Enable blending 
+   * Blending: rendering something which is partially or fully transparent.
+   * Determines how we combine our output color with what is already in our target buffer (see readme)
+   */
   GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
   GLCall(glEnable(GL_BLEND));
 
