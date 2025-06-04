@@ -1,12 +1,14 @@
 GLFW_INCLUDE_PATH="./deps/GLFW/include/"
-GLFW_LIB_PATH="./deps/GLFW/lib/"
-GLFW_STATIC_LIB="./deps/GLFW/lib/libglfw3.a"
-
 GLEW_INCLUDE_PATH="./deps/GLEW/include/"
-GLEW_LIB_PATH="./deps/GLEW/lib/"
-GLEW_STATIC_LIB="./deps/GLEW/lib/libGLEW.a"
 
-STATIC_LIBS="$GLEW_STATIC_LIB $GLFW_STATIC_LIB"
+GLFW_LIB_PATH="./deps/GLFW/lib/"
+GLEW_LIB_PATH="./deps/GLEW/lib/"
+
+GLFW_STATIC_LIB="./deps/GLFW/lib/libglfw3.a"
+GLEW_STATIC_LIB="./deps/GLEW/lib/libGLEW.a"
+STB_IMAGE_STATIC_LIB="./src/vendor/stb_image/libstb_image.a"
+
+STATIC_LIBS="$GLEW_STATIC_LIB $GLFW_STATIC_LIB $STB_IMAGE_STATIC_LIB"
 DYNAMIC_LIBS="-lpthread -lGL -lm -ldl -lX11 -lpthread"
 
 OUT_FILE="app"
@@ -14,7 +16,6 @@ OUT_FILE="app"
 g++ -I$GLFW_INCLUDE_PATH\
     -I$GLEW_INCLUDE_PATH\
     -L$GLFW_LIB_PATH\
-    src/vendor/stb_image/stb_image.cpp\
     src/application.cpp\
     src/IndexBuffer.cpp\
     src/Renderer.cpp\
