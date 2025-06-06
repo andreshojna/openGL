@@ -28,9 +28,14 @@ set(SOURCES
   src/VertexBuffer.cpp
   src/VertexBufferLayout.cpp
 )
+# To check if its using the precompiled headers
+# add_compile_options(-H)
 
 # Add executable
 add_executable(app ${SOURCES})
+
+# Precompiled header
+target_precompile_headers(app PRIVATE "src/pch/pch.hpp")
 
 # Link static libraries
 target_link_libraries(app

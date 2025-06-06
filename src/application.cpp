@@ -1,10 +1,10 @@
+// Inlcude precompiled header first
+#include "pch/pch.hpp"
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include <iostream>
-
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
 
 #include "IndexBuffer.h"
 #include "Renderer.h"
