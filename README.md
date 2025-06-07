@@ -1,4 +1,4 @@
-## Blending
+# Blending
 
 Blending: rendering something which is partially or fully transparent.
 Determines how we combine our output color with what is already in our target buffer
@@ -64,4 +64,17 @@ a = ( 0.5 * 0.5) + ( 1.0 * (1 - 0.5)) = 0.75
 ```
 
 The result is a light magenta with alpha 0.75
+
+
+# Model View Projection (MVP)
+Each word is a matrix and all are multiplied between themselves (P\*V\*M).  
+
+* Projection matrix:  
+  Convert the space into normalized device coordinates.
+
+* View matrix (i-matrix):  
+  Is the view of the camera: position, rotation.
+
+* Model matrix:  
+  Simulate the model-matrix: translation (position), rotation, scale (TRS) of our model/object.
 

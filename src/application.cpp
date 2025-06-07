@@ -109,11 +109,14 @@ int main(void) {
   IndexBuffer ib{indices, sizeof(indices)/sizeof(indices[0])};  // This must be called after bind the vertex array
 
   glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f);  // These are the bounds
+  glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0));
+  glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(200, 200, 0));
+  glm::mat4 mvp = proj * view * model;
 
   Shader shader(SHADERS_PATH);
   shader.Bind();
   shader.SetUniform4f("u_Color", 0.2f, 0.3f, 1.0f, 1.0f);
-  shader.SetUniformMat4f("u_MVP", proj);
+  shader.SetUniformMat4f("u_MVP", mvp);
 
   Texture texture(CHERNO_LOGO_PATH);
   texture.Bind();
