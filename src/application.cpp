@@ -32,7 +32,7 @@ int main(void) {
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
   /* Create a windowed mode window and its OpenGL context */
-  window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+  window = glfwCreateWindow(960, 540, "Hello World", NULL, NULL);
   if (!window) {
     glfwTerminate();
     return -1;
@@ -76,10 +76,10 @@ int main(void) {
   /* Square using index buffer */
   float position_data[] = {
     // Each vertex is a vertices
-    -0.5f, -0.5f, 0.0f, 0.0f, // idx 0: vertices position and texture coordinate
-    0.5f, -0.5f, 1.0f, 0.0f,  // idx 1
-    0.5f, 0.5f, 1.0f, 1.0f,   // idx 2
-    -0.5f, 0.5f, 0.0f, 1.0f,  // idx 3
+    100.0f, 100.0f, 0.0f, 0.0f, // idx 0: vertices position and texture coordinate
+    200.0f, 100.0f, 1.0f, 0.0f,  // idx 1
+    200.0f, 200.0f, 1.0f, 1.0f,   // idx 2
+    100.0f, 200.0f, 0.0f, 1.0f,  // idx 3
   };
 
   unsigned int indices[] = {
@@ -108,7 +108,7 @@ int main(void) {
 
   IndexBuffer ib{indices, sizeof(indices)/sizeof(indices[0])};  // This must be called after bind the vertex array
 
-  glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f);
+  glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f);  // These are the bounds
 
   Shader shader(SHADERS_PATH);
   shader.Bind();
