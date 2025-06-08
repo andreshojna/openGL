@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_glfw_gl3.h>
+#include <test/TestClearColor.h>
 
 #include <iostream>
 
@@ -75,20 +76,6 @@ int main(void) {
   //   -0.5f, -0.5f,
   // };
 
-  /* Square using index buffer */
-  float position_data[] = {
-    // Each vertex is a vertices
-    -50.0f, -50.0f, 0.0f, 0.0f, // idx 0: vertices position and texture coordinate
-    50.0f, -50.0f, 1.0f, 0.0f,  // idx 1
-    50.0f, 50.0f, 1.0f, 1.0f,   // idx 2
-    -50.0f, 50.0f, 0.0f, 1.0f,  // idx 3
-  };
-
-  unsigned int indices[] = {
-    0, 1, 2,
-    2, 3 ,0,
-  };
-
   /**
    * Documentation: https://docs.gl/
    */
@@ -100,101 +87,27 @@ int main(void) {
   GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
   GLCall(glEnable(GL_BLEND));
 
-  VertexArray va;
-  VertexBuffer vb{position_data, sizeof(position_data)};
-  VertexBufferLayout layout;
-
-  layout.Push<float>(2);  // How many coordinates per vertex
-  layout.Push<float>(2);  // How many coordinates per vertices Texture
-  va.AddBuffer(vb, layout);
-
-  IndexBuffer ib{indices, sizeof(indices)/sizeof(indices[0])};  // This must be called after bind the vertex array
-
-  glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f);  // These are the bounds
-  glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
-  glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(200, 200, 0));
-  glm::mat4 mvp = proj * view * model;
-
-  Shader shader(SHADERS_PATH);
-  shader.Bind();
-  shader.SetUniform4f("u_Color", 0.2f, 0.3f, 1.0f, 1.0f);
-  shader.SetUniformMat4f("u_MVP", mvp);
-
-  Texture texture(CHERNO_LOGO_PATH);
-  texture.Bind();
-  shader.SetUniform1i("u_Texture", 0);
-
-  /* Unbind all */
-  va.Unbind();
-  vb.Unbind();
-  ib.Unbind();
-  shader.Unbind();
-
-  /** Pipeline
-   * ---------
-   * Draw call
-   * Vertex shader: is call once per vertex. We tell where that vertex to be.
-   * Fragment (pixel) shader: runs one per each pixel. Determines the color for each pixel.
-   * Visualisation
-   */
-
   Renderer renderer;
 
   ImGui::CreateContext();
   ImGui_ImplGlfwGL3_Init(window, true);
   ImGui::StyleColorsDark();
 
-  glm::vec3 translationA = glm::vec3(200, 200, 0);
-  glm::vec3 translationB = glm::vec3(400, 200, 0);
-
-  float r = 0.0f;
-  float inc = 0.025f;
+  Test::TestClearColor test;
 
   /* Loop until the user closes the window */
   while (!glfwWindowShouldClose(window)) {
-    /* Render here */
     renderer.Clear();
 
+    test.OnUpdate(0.0f);
+    test.OnRender();
+
     ImGui_ImplGlfwGL3_NewFrame();
-
-  
-    shader.Bind();
-    shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
-
-    /* First logo */
-    {
-      glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA);
-      glm::mat4 mvp = proj * view * model;
-      shader.SetUniformMat4f("u_MVP", mvp);
-      renderer.Draw(va, ib, shader);
-    }
-
-    /* Second logo */
-    {
-      glm::mat4 model = glm::translate(glm::mat4(1.0f), translationB);
-      glm::mat4 mvp = proj * view * model;
-      shader.SetUniformMat4f("u_MVP", mvp);
-      renderer.Draw(va, ib, shader);
-    }
-
-    // Red color increment
-    inc = (r > 1.0f) ? -0.01f : (r < 0) ? 0.01f : inc;
-    r += inc; 
-
-    {
-      ImGui::SliderFloat3("translationA", &translationA.x, 0.0f, 860.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-      ImGui::SliderFloat3("translationB", &translationB.x, 0.0f, 860.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-
-      ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-    }
-
+    test.OnImGuiRender();
     ImGui::Render();
     ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 
-    /* Swap front and back buffers */
     glfwSwapBuffers(window);
-
-    /* Poll for and process events */
     glfwPollEvents();
   }
 

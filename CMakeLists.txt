@@ -9,7 +9,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Output to bin/
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
+# Add ImGui to CMake list
 add_subdirectory(${CMAKE_SOURCE_DIR}/src/vendor/imgui/)
+add_subdirectory(${CMAKE_SOURCE_DIR}/src/test/)
 
 # Include directories (e.g., your dependencies)
 include_directories(
@@ -46,6 +48,7 @@ target_link_libraries(app
   ${CMAKE_SOURCE_DIR}/deps/GLEW/lib/libGLEW.a
   ${CMAKE_SOURCE_DIR}/src/vendor/stb_image/libstb_image.a
   ImGui
+  Test
 )
 
 # Link dynamic system libraries
