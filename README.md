@@ -78,3 +78,10 @@ Each word is a matrix and all are multiplied between themselves (P\*V\*M).
 * Model matrix:  
   Simulate the model-matrix: translation (position), rotation, scale (TRS) of our model/object.
 
+# Rendering a second object
+
+To render a second object in a different position we can:
+  * Create another vertex buffer with new position data
+  * Pass to our shader another MVP matrix which transform the original position in a new one
+
+We are going to do the MVP way because create a new vertex buffer is not performant: both objects will be the same and new each bind is slow.
