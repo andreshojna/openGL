@@ -1,13 +1,15 @@
 // Inlcude precompiled header first
 #include "pch/pch.hpp"
 
+#include <iostream>
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_glfw_gl3.h>
-#include <test/TestClearColor.h>
 
-#include <iostream>
+#include "test/TestClearColor.h"
+#include "test/TestTexture2D.h"
 
 #include "IndexBuffer.h"
 #include "Renderer.h"
@@ -16,10 +18,6 @@
 #include "VertexArray.h"
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
-
-static const std::string SHADERS_PATH = {"src/res/shaders/Basic.shader"};
-static const std::string SEC2_TEXTURE_PATH = {"src/res/textures/SeC2.png"};
-static const std::string CHERNO_LOGO_PATH = {"src/res/textures/cherno_logo.png"};
 
 int main(void) {
   GLFWwindow* window;
@@ -98,6 +96,7 @@ int main(void) {
   currentTest = testMenu;
 
   testMenu->RegisterTest<Test::TestClearColor>("Clear color");
+  testMenu->RegisterTest<Test::TestTexture2D>("Texture 2D");
 
   /* Loop until the user closes the window */
   while (!glfwWindowShouldClose(window)) {

@@ -25,7 +25,7 @@ layout(location = 0) out vec4 color;
 
 in vec2 v_Texcoor;
 
-uniform vec4 u_Color;  // if starts with u_ is a uniform variable
+// uniform vec4 u_Color;  // if starts with u_ is a uniform variable
 uniform sampler2D u_Texture;
 
 void main() {

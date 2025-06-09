@@ -1,3 +1,53 @@
+# Vertex Objects
+
+1. Vertex Buffer (VBO – Vertex Buffer Object)
+
+    Purpose: Stores vertex data like positions, colors, normals, texture coordinates, etc.
+
+    Usage: You upload your vertex data to the GPU using a VBO so that shaders can access it.
+
+```
+float vertices[] = {
+    // x, y, z       // r, g, b
+     0.0f, 0.5f, 0.0f,  1.0f, 0.0f, 0.0f,
+    -0.5f,-0.5f, 0.0f,  0.0f, 1.0f, 0.0f,
+     0.5f,-0.5f, 0.0f,  0.0f, 0.0f, 1.0f
+};
+```
+
+
+2. Index Buffer (IBO or EBO – Element Buffer Object)
+
+    Purpose: Stores indices that tell OpenGL how to reuse vertices from the VBO to construct primitives (triangles, lines, etc.).
+
+    Benefit: Reduces duplication of vertex data, which improves performance and memory usage.
+
+```
+unsigned int indices[] = {
+    0, 1, 2  // Use the first, second, and third vertex to make a triangle
+};
+```
+
+3. Vertex Array Object (VAO – Not "VertexArrayBuffer")
+
+    Purpose: Stores the state of vertex attribute configuration, i.e., how the VBO data is interpreted (layout) and which VBO and IBO are bound.
+
+    Usage: You configure it once (e.g., which VBO is used, how data is laid out), then bind it when rendering.
+SW
+Think of it as a shortcut:
+
+    You set up the VAO once with glVertexAttribPointer, etc.
+
+    Then later, just bind the VAO to restore all that state at once.
+
+
+| Object        | Stores                       | OpenGL Binding Target     | Purpose                    |
+| ------------- | ---------------------------- | ------------------------- | -------------------------- |
+| **VBO**       | Raw vertex data              | `GL_ARRAY_BUFFER`         | Supplies vertex attributes |
+| **IBO / EBO** | Indices into vertex data     | `GL_ELEMENT_ARRAY_BUFFER` | Defines vertex reuse       |
+| **VAO**       | VBO & attribute state config | `glBindVertexArray()`     | Bundles VBO/IBO state      |
+
+
 # Blending
 
 Blending: rendering something which is partially or fully transparent.
