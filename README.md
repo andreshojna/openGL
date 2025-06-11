@@ -135,3 +135,24 @@ To render a second object in a different position we can:
   * Pass to our shader another MVP matrix which transform the original position in a new one
 
 We are going to do the MVP way because create a new vertex buffer is not performant: both objects will be the same and new each bind is slow.
+
+# Batch Rendering
+
+### 'Till now
+* We make a draw call per square
+* If we have 1000 squares --> 1000 draw calls = slow
+
+To draw a square we need:
+* Vertex Array
+  * Vertex buffer: 4 vertices {0, 1, 2, 3}
+  * Idex buffer: 6 indices: {{0, 1, 2}, {2, 3, 0}}
+
+Then transform the first square to reposition, change color and make the second draw call
+
+### With batch rendering
+
+* Dynamic Vertex array (stream data in every frame)
+  * Vertex buffer: 2 quads: 8 vertices
+    * Color is in the vertex buffer
+    * Position is in the vertex buffer
+  *Index buffer: 2 quads: 12 indices

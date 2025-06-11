@@ -25,12 +25,12 @@ layout(location = 0) out vec4 color;
 
 in vec2 v_Texcoor;
 
-// uniform vec4 u_Color;  // if starts with u_ is a uniform variable
-uniform sampler2D u_Texture;
+uniform vec4 u_Color;  // if starts with u_ is a uniform variable
+// uniform sampler2D u_Texture;
 
 void main() {
   // color = vec4(1.0, 0.0, 0.0, 1.0);      // not supported in version 1.30
-  vec4 texcoor = texture(u_Texture, v_Texcoor);
-  gl_FragColor = texcoor;     // using texture
-  // gl_FragColor = u_Color;  // using uniform
+  // vec4 texcoor = texture(u_Texture, v_Texcoor);
+  // gl_FragColor = texcoor;     // using texture
+  gl_FragColor = u_Color;  // using uniform
 };
