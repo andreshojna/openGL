@@ -156,3 +156,6 @@ Then transform the first square to reposition, change color and make the second 
     * Color is in the vertex buffer
     * Position is in the vertex buffer
   *Index buffer: 2 quads: 12 indices
+
+## Vertex color
+Add color values to our vertex buffer: now it will have vertices position and color.

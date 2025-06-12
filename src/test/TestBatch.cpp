@@ -4,7 +4,7 @@
 
 namespace Test {
 
-static const std::string SHADERS_PATH = {"src/res/shaders/Basic.shader"};
+static const std::string SHADERS_PATH = {"src/res/shaders/Batch.shader"};
 
 TestBatch::TestBatch() :
     m_Translation{0.0f, 0.0f, 0.0f}, 
@@ -15,15 +15,16 @@ TestBatch::TestBatch() :
 #define Y_RATE(x) (x)/9
 
   float vertices[] = {
-    -4.0f, -1.0f,
-    -2.0f, -1.0f,
-    -2.0f, 1.0f,
-    -4.0f, 1.0f,
+    // Position(2) // Color(4)
+    -4.0f, -1.0f, 0.18f, 0.6f, 0.96f, 1.0f,
+    -2.0f, -1.0f, 0.18f, 0.6f, 0.96f, 1.0f,
+    -2.0f, 1.0f, 0.18f, 0.6f, 0.96f, 1.0f,
+    -4.0f, 1.0f, 0.18f, 0.6f, 0.96f, 1.0f,
 
-    4.0f, -1.0f,
-    2.0f, -1.0f,
-    2.0f, 1.0f,
-    4.0f, 1.0f,
+    4.0f, -1.0f, 1.0f, 0.93f, 0.24f, 1.0f,
+    2.0f, -1.0f, 1.0f, 0.93f, 0.24f, 1.0f,
+    2.0f, 1.0f, 1.0f, 0.93f, 0.24f, 1.0f,
+    4.0f, 1.0f, 1.0f, 0.93f, 0.24f, 1.0f,
   };
 
   unsigned int indices[] = {
@@ -41,7 +42,8 @@ TestBatch::TestBatch() :
   VertexBuffer vb{vertices, sizeof(vertices)};
   VertexBufferLayout layout;
 
-  layout.Push<float>(2);  // How many coordinates per vertex
+  layout.Push<float>(2);  // How many floats per vertex position
+  layout.Push<float>(4);  // How many floats per vertex color
   m_VAO->AddBuffer(vb, layout);
 
   m_IndexBuffer = std::make_unique<IndexBuffer>(indices, sizeof(indices)/sizeof(indices[0]));  // This must be called after bind the vertex array
