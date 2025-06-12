@@ -29,10 +29,10 @@ public:
   void OnRender() override;
   void OnImGuiRender() override;
 
-  template<typename T>
-void RegisterTest(const std::string& name) {
+  template<typename T, typename... Args>
+  void RegisterTest(const std::string& name, Args&&... args) {
   std::cout << "Registering test " << name << std::endl;
-  m_Tests.push_back(std::make_pair(name, [](){ return new T(); }));
+  m_Tests.push_back(std::make_pair(name, [=](){ return new T(std::forward<Args>(args)...); }));
 }
 
 private:
