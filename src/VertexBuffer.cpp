@@ -4,9 +4,8 @@
 
 #include "Renderer.h"
 
-VertexBuffer::VertexBuffer(const void* data, unsigned int size) {
-  VertexBuffer(data, size, GL_STATIC_DRAW);
-}
+VertexBuffer::VertexBuffer(const void* data, unsigned int size) :
+  VertexBuffer(data, size, GL_STATIC_DRAW) {}
 
 VertexBuffer::VertexBuffer(const void* data, unsigned int size, unsigned int usage_hint) {
   GLCall(glGenBuffers(1, &m_RendererId));
