@@ -10,6 +10,7 @@
 
 #include "test/TestBatchColor.h"
 #include "test/TestBatchTexture.h"
+#include "test/TestDynamicBatch.h"
 #include "test/TestClearColor.h"
 #include "test/TestTexture2D.h"
 
@@ -101,6 +102,9 @@ int main(void) {
   testMenu->RegisterTest<Test::TestTexture2D>("Texture 2D");
   testMenu->RegisterTest<Test::TestBatchColor>("BatchColor");
   testMenu->RegisterTest<Test::TestBatchTexture>("BatchTexture",
+      "src/res/textures/cherno_logo.png",
+      "src/res/textures/SeC2.png");
+  testMenu->RegisterTest<Test::TestDynamicBatch>("DynamicBatch",
       "src/res/textures/cherno_logo.png",
       "src/res/textures/SeC2.png");
 

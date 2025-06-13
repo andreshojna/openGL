@@ -19,7 +19,7 @@ void VertexArray::AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& la
   for (unsigned int i = 0; i < elements.size(); i++) {
     const auto& element = elements[i];
 
-    /* Set the vertex atributes: that is, explain the layout. Possition, color, normal, texture, all are attributes 
+    /* Set the vertex atributes: that is, explain the layout. Position, color, normal, texture, all are attributes 
     * This line links the vertex buffer with the array buffer.
     * stride: amount of bytes between vertex: the size of each vertex depends on the defined attributes
     * pointer: index in bytes inside the vertex, its like the offset where the attribute is inside the vertex
