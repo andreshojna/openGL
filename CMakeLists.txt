@@ -25,6 +25,7 @@ include_directories(
 set(SOURCES
   src/application.cpp
   src/IndexBuffer.cpp
+  src/IndexBufferDynamic.cpp
   src/Renderer.cpp
   src/Shader.cpp
   src/Texture.cpp

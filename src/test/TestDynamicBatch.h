@@ -14,10 +14,18 @@
 
 namespace Test {
 
+struct Vec2 {
+  float x, y;
+};
+
+struct Vec4 {
+  float x, y, z, w;
+};
+
 struct Vertex {
-  float position[2];
-  float color[4];
-  float texCoords[2];
+  Vec2 position;
+  Vec4 color;
+  Vec2 texCoords; 
   float texId;
 };
 
@@ -31,6 +39,10 @@ public:
   void OnImGuiRender() override;
 
 private:
+  static constexpr size_t m_MaxQuadCount = 1000;
+  static constexpr size_t m_MaxVertexCount = m_MaxQuadCount * 4;
+  static constexpr size_t m_MaxIndexCount = m_MaxQuadCount * 6;
+
   std::unique_ptr<VertexArray> m_VAO;
   std::unique_ptr<VertexBuffer> m_VBO;
   std::unique_ptr<IndexBuffer> m_IndexBuffer;
@@ -44,7 +56,7 @@ private:
 
   float m_QuadPosition[2] = {-4.0f, -1.0f};
 
-  static std::array<Vertex, 4> CreateQuad(float x, float y, float textureId);
+  Vertex* CreateQuad(Vertex* target, float x, float y, float textureId);
 };
 
 } // namespace Test
